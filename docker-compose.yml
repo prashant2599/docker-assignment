@@ -4,6 +4,8 @@ services:
     image: postgres
     volumes:
       - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
   web:
     build: .
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
@@ -18,4 +20,14 @@ services:
 
 volumes: 
   postgres:
-  bundler_gems:
+  bundler_gems: # The specified database role being used to connect to postgres.
+  # To create additional roles in postgres see `$ createuser --help`.
+  # When left blank, postgres will use the default role. This is
+  # the same name as the operating system user that initialized the database.
+  #username: dockerproject
+
+  # The password associated with the postgres role (username).
+  #password:
+
+  # Connect on a TCP socket. Omitted by default since the client uses a
+  # domain socket that doesn't need configuration. Windows does not have
