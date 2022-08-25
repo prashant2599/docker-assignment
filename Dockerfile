@@ -1,11 +1,16 @@
-FROM ruby
+FROM ruby:2.5
+RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
+RUN mkdir /dockerproject
+WORKDIR /dockerproject
+COPY Gemfile /dockerproject/Gemfile
+COPY Gemfile.lock /dockerproject/Gemfile.lock
+RUN bundle install
+COPY . /dockerproject
 
-ENV INSTALL_PATH /opt/app
-RUN  mkdir -p $INSTALL_PATH
+COPY entrypoint.sh /usr/bin
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+EXPOSE 3000
 
-RUN gem install rails bundler
-
-WORKDIR /opt/app
-
-CMD ["/bin/sh"]
+CMD ["rails", "server", "-b", "0.0.0.0"]
 
